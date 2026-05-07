@@ -1,6 +1,6 @@
 Dependencies for Project 'RTOSDemo', Target 'Target 1': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 for Certification (build 960)::.\ARMCC
-F (.\STM32F10x.s)(0x60FAEF76)(--cpu Cortex-M3 -g --apcs=interwork --pd "__MICROLIB SETA 1"-ID:\Keil5\Keil\STM32F1xx_DFP\2.4.1\Device\Include--pd "__UVISION_VERSION SETA 538" --pd "STM32F10X_MD SETA 1"--list .\stm32f10x.lst --xref -o .\stm32f10x.o --depend .\stm32f10x.d)
+F (.\STM32F10x.s)(0x69FB2471)(--cpu Cortex-M3 -g --apcs=interwork --pd "__MICROLIB SETA 1"-ID:\Keil5\Keil\STM32F1xx_DFP\2.4.1\Device\Include--pd "__UVISION_VERSION SETA 538" --pd "STM32F10X_MD SETA 1"--list .\stm32f10x.lst --xref -o .\stm32f10x.o --depend .\stm32f10x.d)
 F (..\Common\drivers\ST\STM32F10xFWLib\src\lcd.c)(0x60FAEF76)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORTEX_STM32F103_Keil -I ..\Common\include -I ..\..\Source\include -I .\STM32F10xFWLib\inc-ID:\Keil5\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="538" -DSTM32F10X_MD -DRVDS_ARMCM3_LM3S102-o .\lcd.o --omf_browse .\lcd.crf --depend .\lcd.d)
 I (.\STM32F10xFWLib\inc\stm32f10x_type.h)(0x60FAEF76)
 I (.\STM32F10xFWLib\inc\lcd.h)(0x60FAEF76)
@@ -162,7 +162,7 @@ I (.\STM32F10xFWLib\inc\stm32f10x_spi.h)(0x60FAEF76)
 I (.\STM32F10xFWLib\inc\stm32f10x_systick.h)(0x60FAEF76)
 I (.\STM32F10xFWLib\inc\stm32f10x_usart.h)(0x60FAEF76)
 I (.\STM32F10xFWLib\inc\stm32f10x_tim.h)(0x60FAEF76)
-F (.\main.c)(0x60FAEF76)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORTEX_STM32F103_Keil -I ..\Common\include -I ..\..\Source\include -I .\STM32F10xFWLib\inc-ID:\Keil5\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="538" -DSTM32F10X_MD -DRVDS_ARMCM3_LM3S102-o .\main.o --omf_browse .\main.crf --depend .\main.d)
+F (.\main.c)(0x69FB2454)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORTEX_STM32F103_Keil -I ..\Common\include -I ..\..\Source\include -I .\STM32F10xFWLib\inc-ID:\Keil5\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="538" -DSTM32F10X_MD -DRVDS_ARMCM3_LM3S102-o .\main.o --omf_browse .\main.crf --depend .\main.d)
 I (D:\Keil5\ARM\ARMCC\include\stdio.h)(0x5E8E3CC2)
 I (..\..\Source\include\FreeRTOS.h)(0x60FAEFBA)
 I (D:\Keil5\ARM\ARMCC\include\stddef.h)(0x5E8E3CC2)
