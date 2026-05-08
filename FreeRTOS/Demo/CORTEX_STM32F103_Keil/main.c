@@ -67,19 +67,8 @@
 
 /* Library includes. */
 #include "stm32f10x_it.h"
+#include "serial.h"
 
-/* Demo app includes. */
-#include "lcd.h"
-#include "LCD_Message.h"
-#include "BlockQ.h"
-#include "death.h"
-#include "integer.h"
-#include "blocktim.h"
-#include "partest.h"
-#include "semtest.h"
-#include "PollQ.h"
-#include "flash.h"
-#include "comtest2.h"
 
 /* Task priorities. */
 #define mainQUEUE_POLL_PRIORITY				( tskIDLE_PRIORITY + 2 )
@@ -129,40 +118,9 @@ information. */
 static void prvSetupHardware( void );
 
 /*
- * Configure the LCD as required by the demo.
- */
-static void prvConfigureLCD( void );
-
-/*
- * The LCD is written two by more than one task so is controlled by a
- * 'gatekeeper' task.  This is the only task that is actually permitted to
- * access the LCD directly.  Other tasks wanting to display a message send
- * the message to the gatekeeper.
- */
-static void vLCDTask( void *pvParameters );
-
-/*
  * Retargets the C library printf function to the USART.
  */
 int fputc( int ch, FILE *f );
-
-/*
- * Checks the status of all the demo tasks then prints a message to the
- * display.  The message will be either PASS - and include in brackets the
- * maximum measured jitter time (as described at the to of the file), or a
- * message that describes which of the standard demo tasks an error has been
- * discovered in.
- *
- * Messages are not written directly to the terminal, but passed to vLCDTask
- * via a queue.
- */
-static void vCheckTask( void *pvParameters );
-
-/*
- * Configures the timers and interrupts for the fast interrupt test as
- * described at the top of this file.
- */
-extern void vSetupTimerTest( void );
 
 /*-----------------------------------------------------------*/
 
@@ -178,31 +136,8 @@ int main( void )
 #endif
 
 	prvSetupHardware();
-
-	/* Create the queue used by the LCD task.  Messages for display on the LCD
-	are received via this queue. */
-	xLCDQueue = xQueueCreate( mainLCD_QUEUE_SIZE, sizeof( xLCDMessage ) );
-
-	/* Start the standard demo tasks. */
-	vStartBlockingQueueTasks( mainBLOCK_Q_PRIORITY );
-    vCreateBlockTimeTasks();
-    vStartSemaphoreTasks( mainSEM_TEST_PRIORITY );
-    vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
-    vStartIntegerMathTasks( mainINTEGER_TASK_PRIORITY );
-	vStartLEDFlashTasks( mainFLASH_TASK_PRIORITY );
-	vAltStartComTestTasks( mainCOM_TEST_PRIORITY, mainCOM_TEST_BAUD_RATE, mainCOM_TEST_LED );
-
-	/* Start the tasks defined within this file/specific to this demo. */
-    xTaskCreate( vCheckTask, "Check", mainCHECK_TASK_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );
-	xTaskCreate( vLCDTask, "LCD", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
-
-	/* The suicide tasks must be created last as they need to know how many
-	tasks were running prior to their creation in order to ascertain whether
-	or not the correct/expected number of tasks are running at any given time. */
-    vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
-
-	/* Configure the timers used by the fast interrupt timer test. */
-	vSetupTimerTest();
+	
+	printf("Hello World!");
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
@@ -210,81 +145,6 @@ int main( void )
 	/* Will only get here if there was not enough heap space to create the
 	idle task. */
 	return 0;
-}
-/*-----------------------------------------------------------*/
-
-void vLCDTask( void *pvParameters )
-{
-xLCDMessage xMessage;
-
-	/* Initialise the LCD and display a startup message. */
-	prvConfigureLCD();
-	LCD_DrawMonoPict( ( unsigned long * ) pcBitmap );
-
-	for( ;; )
-	{
-		/* Wait for a message to arrive that requires displaying. */
-		while( xQueueReceive( xLCDQueue, &xMessage, portMAX_DELAY ) != pdPASS );
-
-		/* Display the message.  Print each message to a different position. */
-		printf( ( char const * ) xMessage.pcMessage );
-	}
-}
-/*-----------------------------------------------------------*/
-
-static void vCheckTask( void *pvParameters )
-{
-TickType_t xLastExecutionTime;
-xLCDMessage xMessage;
-static signed char cPassMessage[ mainMAX_MSG_LEN ];
-extern unsigned short usMaxJitter;
-
-	xLastExecutionTime = xTaskGetTickCount();
-	xMessage.pcMessage = cPassMessage;
-
-    for( ;; )
-	{
-		/* Perform this check every mainCHECK_DELAY milliseconds. */
-		vTaskDelayUntil( &xLastExecutionTime, mainCHECK_DELAY );
-
-		/* Has an error been found in any task? */
-
-        if( xAreBlockingQueuesStillRunning() != pdTRUE )
-		{
-			xMessage.pcMessage = "ERROR IN BLOCK Q\n";
-		}
-		else if( xAreBlockTimeTestTasksStillRunning() != pdTRUE )
-		{
-			xMessage.pcMessage = "ERROR IN BLOCK TIME\n";
-		}
-        else if( xAreSemaphoreTasksStillRunning() != pdTRUE )
-        {
-            xMessage.pcMessage = "ERROR IN SEMAPHORE\n";
-        }
-        else if( xArePollingQueuesStillRunning() != pdTRUE )
-        {
-            xMessage.pcMessage = "ERROR IN POLL Q\n";
-        }
-        else if( xIsCreateTaskStillRunning() != pdTRUE )
-        {
-            xMessage.pcMessage = "ERROR IN CREATE\n";
-        }
-        else if( xAreIntegerMathsTaskStillRunning() != pdTRUE )
-        {
-            xMessage.pcMessage = "ERROR IN MATH\n";
-        }
-		else if( xAreComTestTasksStillRunning() != pdTRUE )
-		{
-			xMessage.pcMessage = "ERROR IN COM TEST\n";
-		}
-		else
-		{
-			sprintf( ( char * ) cPassMessage, "PASS [%uns]\n", ( ( unsigned long ) usMaxJitter ) * mainNS_PER_CLOCK );
-		}
-
-		/* Send the message to the LCD gatekeeper for display. */
-		xQueueSend( xLCDQueue, &xMessage, portMAX_DELAY );
-	}
 }
 /*-----------------------------------------------------------*/
 
@@ -348,78 +208,7 @@ static void prvSetupHardware( void )
 	/* Configure HCLK clock as SysTick clock source. */
 	SysTick_CLKSourceConfig( SysTick_CLKSource_HCLK );
 
-	vParTestInitialise();
-}
-/*-----------------------------------------------------------*/
-
-static void prvConfigureLCD( void )
-{
-GPIO_InitTypeDef GPIO_InitStructure;
-
-	/* Configure LCD Back Light (PA8) as output push-pull */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init( GPIOA, &GPIO_InitStructure );
-
-	/* Set the Backlight Pin */
-	GPIO_WriteBit(GPIOA, GPIO_Pin_8, Bit_SET);
-
-	/* Initialize the LCD */
-	LCD_Init();
-
-	/* Set the Back Color */
-	LCD_SetBackColor( White );
-
-	/* Set the Text Color */
-	LCD_SetTextColor( 0x051F );
-
-	LCD_Clear();
-}
-/*-----------------------------------------------------------*/
-
-int fputc( int ch, FILE *f )
-{
-static unsigned short usColumn = 0, usRefColumn = mainCOLUMN_START;
-static unsigned char ucLine = 0;
-
-	if( ( usColumn == 0 ) && ( ucLine == 0 ) )
-	{
-		LCD_Clear();
-	}
-
-	if( ch != '\n' )
-	{
-		/* Display one character on LCD */
-		LCD_DisplayChar( ucLine, usRefColumn, (u8) ch );
-
-		/* Decrement the column position by 16 */
-		usRefColumn -= mainCOLUMN_INCREMENT;
-
-		/* Increment the character counter */
-		usColumn++;
-		if( usColumn == mainMAX_COLUMN )
-		{
-			ucLine += mainROW_INCREMENT;
-			usRefColumn = mainCOLUMN_START;
-			usColumn = 0;
-		}
-	}
-	else
-	{
-		/* Move back to the first column of the next line. */
-		ucLine += mainROW_INCREMENT;
-		usRefColumn = mainCOLUMN_START;
-		usColumn = 0;
-	}
-
-	/* Wrap back to the top of the display. */
-	if( ucLine >= mainMAX_LINE )
-	{
-		ucLine = 0;
-	}
-
-	return ch;
+	SerialPortInit();
 }
 /*-----------------------------------------------------------*/
 

@@ -1,0 +1,14 @@
+.\objects\death.o: ..\Common\Minimal\death.c
+.\objects\death.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\death.o: ..\..\Source\include\FreeRTOS.h
+.\objects\death.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\death.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\death.o: ..\CORTEX_STM32F103_Keil\FreeRTOSConfig.h
+.\objects\death.o: ..\..\Source\include\projdefs.h
+.\objects\death.o: ..\..\Source\include\portable.h
+.\objects\death.o: ..\..\Source\include\deprecated_definitions.h
+.\objects\death.o: ..\..\Source\include\../../Source/portable/RVDS/ARM_CM3/portmacro.h
+.\objects\death.o: ..\..\Source\include\mpu_wrappers.h
+.\objects\death.o: ..\..\Source\include\task.h
+.\objects\death.o: ..\..\Source\include\list.h
+.\objects\death.o: ..\Common\include\death.h

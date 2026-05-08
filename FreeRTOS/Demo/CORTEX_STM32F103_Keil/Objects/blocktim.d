@@ -1,0 +1,14 @@
+.\objects\blocktim.o: ..\Common\Minimal\blocktim.c
+.\objects\blocktim.o: ..\..\Source\include\FreeRTOS.h
+.\objects\blocktim.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\blocktim.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\blocktim.o: ..\CORTEX_STM32F103_Keil\FreeRTOSConfig.h
+.\objects\blocktim.o: ..\..\Source\include\projdefs.h
+.\objects\blocktim.o: ..\..\Source\include\portable.h
+.\objects\blocktim.o: ..\..\Source\include\deprecated_definitions.h
+.\objects\blocktim.o: ..\..\Source\include\../../Source/portable/RVDS/ARM_CM3/portmacro.h
+.\objects\blocktim.o: ..\..\Source\include\mpu_wrappers.h
+.\objects\blocktim.o: ..\..\Source\include\task.h
+.\objects\blocktim.o: ..\..\Source\include\list.h
+.\objects\blocktim.o: ..\..\Source\include\queue.h
+.\objects\blocktim.o: ..\Common\include\blocktim.h

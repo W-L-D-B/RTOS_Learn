@@ -1,0 +1,15 @@
+.\objects\pollq.o: ..\Common\Minimal\PollQ.c
+.\objects\pollq.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\pollq.o: ..\..\Source\include\FreeRTOS.h
+.\objects\pollq.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\pollq.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\pollq.o: ..\CORTEX_STM32F103_Keil\FreeRTOSConfig.h
+.\objects\pollq.o: ..\..\Source\include\projdefs.h
+.\objects\pollq.o: ..\..\Source\include\portable.h
+.\objects\pollq.o: ..\..\Source\include\deprecated_definitions.h
+.\objects\pollq.o: ..\..\Source\include\../../Source/portable/RVDS/ARM_CM3/portmacro.h
+.\objects\pollq.o: ..\..\Source\include\mpu_wrappers.h
+.\objects\pollq.o: ..\..\Source\include\task.h
+.\objects\pollq.o: ..\..\Source\include\list.h
+.\objects\pollq.o: ..\..\Source\include\queue.h
+.\objects\pollq.o: ..\Common\include\PollQ.h
