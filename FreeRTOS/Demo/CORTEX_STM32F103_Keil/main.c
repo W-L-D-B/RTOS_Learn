@@ -143,10 +143,32 @@ void Task2Function(void * param){
 
 void Task3Function(void * param){
 	while(1){
+		printf("3");
+	}
+}
+
+void Task4Function(void * param){
+	while(1){
 		LED_Turn();
 	}
 }
 
+/*-----------------------------------------------------------*/
+StackType_t xTask3Stack[100];
+StaticTask_t xTask3TCB;
+
+StackType_t xIdleTaskStack[100];
+StaticTask_t xIdleTaskTCB;
+
+/*-----------------------------------------------------------*/
+void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
+                                    StackType_t ** ppxIdleTaskStackBuffer,
+                                    uint32_t * pulIdleTaskStackSize )
+{
+    *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
+    *ppxIdleTaskStackBuffer = xIdleTaskStack;
+    *pulIdleTaskStackSize = 100;
+}
 /*-----------------------------------------------------------*/
 
 int main( void )
@@ -163,7 +185,8 @@ int main( void )
 
 	xTaskCreate(Task1Function, "Task1", 100, NULL, 1, &xHandleTask1);
 	xTaskCreate(Task2Function, "Task2", 100, NULL, 1, NULL);
-	xTaskCreate(Task3Function, "Task3", 100, NULL, 1, NULL);
+	xTaskCreateStatic(Task3Function, "Task3", 100, NULL, 1, xTask3Stack, &xTask3TCB);
+	xTaskCreate(Task4Function, "Task4", 100, NULL, 1, NULL);
 	
 	/* Start the scheduler. */
 	vTaskStartScheduler();
