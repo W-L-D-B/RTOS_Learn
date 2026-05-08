@@ -129,29 +129,62 @@ int fputc( int ch, FILE *f );
 QueueHandle_t xLCDQueue;
 
 /*-----------------------------------------------------------*/
+TaskHandle_t xHandleTask1;
+
+static int Task1Flag = 0;
+static int Task2Flag = 0;
+static int Task3Flag = 0;
+
 void Task1Function(void * param){
 	while(1){
+		Task1Flag = 1;
+		Task2Flag = 0;
+		Task3Flag = 0;
+
 		printf("1");
 	}
 }
 
 void Task2Function(void * param){
+	int i = 0;
 	while(1){
+		if(i++ == 100){
+			vTaskDelete(xHandleTask1);
+		}
+		if(i == 200){
+			i = 0;
+			vTaskDelete(NULL);
+		}
+		Task1Flag = 0;
+		Task2Flag = 1;
+		Task3Flag = 0;
 		printf("2");
 	}
 }
 
 void Task3Function(void * param){
 	while(1){
+		Task1Flag = 0;
+		Task2Flag = 0;
+		Task3Flag = 1;
 		printf("3");
 	}
 }
 
-void Task4Function(void * param){
+void TaskGenericFunction(void * param){
+	int val = (int) param;
+
 	while(1){
-		LED_Turn();
+		printf("%d", val);
 	}
 }
+
+
+// void Task4Function(void * param){
+// 	while(1){
+// 		LED_Turn();
+// 	}
+// }
 
 /*-----------------------------------------------------------*/
 StackType_t xTask3Stack[100];
@@ -173,7 +206,6 @@ void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
 
 int main( void )
 {
-	TaskHandle_t xHandleTask1;
 
 #ifdef DEBUG
   debug();
@@ -186,7 +218,11 @@ int main( void )
 	xTaskCreate(Task1Function, "Task1", 100, NULL, 1, &xHandleTask1);
 	xTaskCreate(Task2Function, "Task2", 100, NULL, 1, NULL);
 	xTaskCreateStatic(Task3Function, "Task3", 100, NULL, 1, xTask3Stack, &xTask3TCB);
-	xTaskCreate(Task4Function, "Task4", 100, NULL, 1, NULL);
+
+	xTaskCreate(TaskGenericFunction, "Task4", 100, (void *)4, 1, NULL);
+	xTaskCreate(TaskGenericFunction, "Task5", 100, (void *)5, 1, NULL);
+
+	// xTaskCreate(Task4Function, "Task4", 100, NULL, 1, NULL);
 	
 	/* Start the scheduler. */
 	vTaskStartScheduler();

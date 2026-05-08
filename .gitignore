@@ -1,0 +1,19 @@
+# Keil / MDK generated state and intermediates
+FreeRTOS/Demo/CORTEX_STM32F103_Keil/Objects/
+FreeRTOS/Demo/CORTEX_STM32F103_Keil/Listing/
+FreeRTOS/Demo/CORTEX_STM32F103_Keil/*.uvguix.*
+FreeRTOS/Demo/CORTEX_STM32F103_Keil/*.uvoptx
+
+# Generic generated artifacts
+*.axf
+*.bin
+*.dep
+*.d
+*.elf
+*.exe
+*.hex
+*.lnp
+*.log
+*.map
+*.o
+*.obj
