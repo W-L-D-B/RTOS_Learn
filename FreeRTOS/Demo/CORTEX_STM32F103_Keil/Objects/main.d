@@ -26,3 +26,4 @@
 .\objects\main.o: .\STM32F10xFWLib\inc\stm32f10x_systick.h
 .\objects\main.o: .\STM32F10xFWLib\inc\stm32f10x_usart.h
 .\objects\main.o: ..\Common\include\serial.h
+.\objects\main.o: .\Code\Led.h

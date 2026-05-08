@@ -68,6 +68,7 @@
 /* Library includes. */
 #include "stm32f10x_it.h"
 #include "serial.h"
+#include "Led.h"
 
 
 /* Task priorities. */
@@ -128,17 +129,42 @@ int fputc( int ch, FILE *f );
 QueueHandle_t xLCDQueue;
 
 /*-----------------------------------------------------------*/
+void Task1Function(void * param){
+	while(1){
+		printf("1");
+	}
+}
+
+void Task2Function(void * param){
+	while(1){
+		printf("2");
+	}
+}
+
+void Task3Function(void * param){
+	while(1){
+		LED_Turn();
+	}
+}
+
+/*-----------------------------------------------------------*/
 
 int main( void )
 {
+	TaskHandle_t xHandleTask1;
+
 #ifdef DEBUG
   debug();
 #endif
 
 	prvSetupHardware();
 	
-	printf("Hello World!");
+	printf("Hello World!\r\n");
 
+	xTaskCreate(Task1Function, "Task1", 100, NULL, 1, &xHandleTask1);
+	xTaskCreate(Task2Function, "Task2", 100, NULL, 1, NULL);
+	xTaskCreate(Task3Function, "Task3", 100, NULL, 1, NULL);
+	
 	/* Start the scheduler. */
 	vTaskStartScheduler();
 
@@ -209,6 +235,8 @@ static void prvSetupHardware( void )
 	SysTick_CLKSourceConfig( SysTick_CLKSource_HCLK );
 
 	SerialPortInit();
+
+	LED_Init();
 }
 /*-----------------------------------------------------------*/
 
