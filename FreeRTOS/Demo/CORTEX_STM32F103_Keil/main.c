@@ -143,31 +143,36 @@ static int Task1Flag = 0;
 static int Task2Flag = 0;
 static int Task3Flag = 0;
 
-uint32_t cnt = 0;
+static uint32_t randoms[] = {3, 51, 15, 73, 2, 99};
+
+TickType_t xStart;
 
 void Task1Function(void * param){
+	uint8_t i = 0, j = 0;
+
 	while(1){
+		xStart = xTaskGetTickCount();
+		
 		Task1Flag = 1;
 		Task2Flag = 0;
 		Task3Flag = 0;
 
-		printf("1");
-
-		if(cnt++ == 300){
-			vTaskResume(xHandleTask2);
-			cnt = 0;
+		for(i = 0; i < randoms[j]; i ++){
+			printf("1");
 		}
+
+		j ++;
+		j %= 6;
+#if 0
+		vTaskDelay(10);
+#else
+		vTaskDelayUntil(&xStart, 20);
+#endif
 	}
 }
 
 void Task2Function(void * param){
 	while(1){
-		if(cnt++ == 100){
-			vTaskDelay(10);
-		}
-		if(cnt == 200){
-			vTaskSuspend(NULL);
-		}
 
 		Task1Flag = 0;
 		Task2Flag = 1;
@@ -223,7 +228,7 @@ int main( void )
 	
 	printf("Hello World!\r\n");
 
-	xTaskCreate(Task1Function, "Task1", 100, NULL, 1, &xHandleTask1);
+	xTaskCreate(Task1Function, "Task1", 100, NULL, 2, &xHandleTask1);
 	xTaskCreate(Task2Function, "Task2", 100, NULL, 1, &xHandleTask2);
 	xTaskCreateStatic(Task3Function, "Task3", 100, NULL, 1, xTask3Stack, &xTask3TCB);
 
