@@ -129,92 +129,50 @@ int fputc( int ch, FILE *f );
 QueueHandle_t xLCDQueue;
 
 /*-----------------------------------------------------------*/
+void Task2Function(void * param);
+void vApplicationIdleHook(void);
+
 TaskHandle_t xHandleTask1;
-TaskHandle_t xHandleTask2;
-
-StackType_t xTask3Stack[100];
-StaticTask_t xTask3TCB;
-
-StackType_t xIdleTaskStack[100];
-StaticTask_t xIdleTaskTCB;
 
 /*-----------------------------------------------------------*/
 static int Task1Flag = 0;
 static int Task2Flag = 0;
-static int Task3Flag = 0;
-
-static uint32_t randoms[] = {3, 51, 15, 73, 2, 99};
-
-TickType_t xStart;
+static int TaskIdleFlag = 0;
 
 void Task1Function(void * param){
-	uint8_t i = 0, j = 0;
+	TaskHandle_t xHandleTask2;
+	BaseType_t xReturn;
 
 	while(1){
-		xStart = xTaskGetTickCount();
-		
 		Task1Flag = 1;
 		Task2Flag = 0;
-		Task3Flag = 0;
+		TaskIdleFlag = 0;
+		printf("1");
+		xReturn = xTaskCreate(Task2Function, "Task2", 1024, NULL, 2, &xHandleTask2);
 
-		for(i = 0; i < randoms[j]; i ++){
-			printf("1");
+		if(xReturn != pdPASS){
+			printf("Task2 create err\r\n");
 		}
-
-		j ++;
-		j %= 6;
-#if 0
-		vTaskDelay(10);
-#else
-		vTaskDelayUntil(&xStart, 20);
-#endif
 	}
 }
 
 void Task2Function(void * param){
 	while(1){
-
 		Task1Flag = 0;
 		Task2Flag = 1;
-		Task3Flag = 0;
+		TaskIdleFlag = 0;
 		printf("2");
+		vTaskDelete(NULL);
 	}
 }
 
-void Task3Function(void * param){
-	while(1){
-		Task1Flag = 0;
-		Task2Flag = 0;
-		Task3Flag = 1;
-		printf("3");
-	}
+void vApplicationIdleHook(void){
+	Task1Flag = 0;
+	Task2Flag = 0;
+	TaskIdleFlag = 1;
+	printf("0");
 }
 
-void TaskGenericFunction(void * param){
-	int val = (int) param;
-
-	while(1){
-		printf("%d", val);
-	}
-}
-
-
-// void Task4Function(void * param){
-// 	while(1){
-// 		LED_Turn();
-// 	}
-// }
-
-/*-----------------------------------------------------------*/
-
-void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
-                                    StackType_t ** ppxIdleTaskStackBuffer,
-                                    uint32_t * pulIdleTaskStackSize )
-{
-    *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
-    *ppxIdleTaskStackBuffer = xIdleTaskStack;
-    *pulIdleTaskStackSize = 100;
-}
 /*-----------------------------------------------------------*/
 
 int main( void )
@@ -228,14 +186,7 @@ int main( void )
 	
 	printf("Hello World!\r\n");
 
-	xTaskCreate(Task1Function, "Task1", 100, NULL, 2, &xHandleTask1);
-	xTaskCreate(Task2Function, "Task2", 100, NULL, 1, &xHandleTask2);
-	xTaskCreateStatic(Task3Function, "Task3", 100, NULL, 1, xTask3Stack, &xTask3TCB);
-
-//	xTaskCreate(TaskGenericFunction, "Task4", 100, (void *)4, 1, NULL);
-//	xTaskCreate(TaskGenericFunction, "Task5", 100, (void *)5, 1, NULL);
-
-	// xTaskCreate(Task4Function, "Task4", 100, NULL, 1, NULL);
+	xTaskCreate(Task1Function, "Task1", 100, NULL, 0, &xHandleTask1);
 	
 	/* Start the scheduler. */
 	vTaskStartScheduler();
